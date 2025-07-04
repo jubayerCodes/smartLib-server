@@ -10,17 +10,17 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Smart Lib server')
 })
 
-
 app.use((req: Request, res: Response, next: NextFunction) => {
     res.status(404).json({ message: "Route not found" })
 })
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     if (error) {
+
         res.status(400).json(
             {
                 success: false,
-                message: error._message || "Something went wrong",
+                message: error._message || error.name === "ZodError" && "Validation failed" || "Something went wrong",
                 error
             }
         )
