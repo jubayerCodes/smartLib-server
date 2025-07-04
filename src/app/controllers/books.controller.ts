@@ -16,7 +16,8 @@ booksRoutes.post('/', async (req: Request, res: Response, next: NextFunction) =>
             message: "Book created successfully",
             data: newBook
         })
-    } catch (error) {
+    } catch (error: any) {
+        error.message = "Book post failed"
         next(error)
     }
 })
@@ -55,7 +56,94 @@ booksRoutes.get('/', async (req: Request, res: Response, next: NextFunction) => 
             message: "Books retrieved successfully",
             data: allBooks
         })
-    } catch (error) {
+    } catch (error: any) {
+        error.message = "Books retrieve failed"
+        next(error)
+    }
+})
+
+
+// Get Book By Id
+booksRoutes.get('/:bookId', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const bookId = req.params.bookId
+
+        const book = await Book.findById(bookId)
+
+        res.json({
+            success: true,
+            message: "Book retrieved successfully",
+            data: book
+        })
+    } catch (error: any) {
+
+        error.message = "Book retrieve failed"
+
+        if (error.name === "CastError") {
+            error.message = "BookId is not valid"
+        }
+        next(error)
+    }
+})
+
+
+// Update book
+booksRoutes.put('/:bookId', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const bookId = req.params.bookId
+        const updatePart = req.body
+
+        const existingBook = await Book.findById(bookId)
+
+        if (!existingBook) {
+            throw new Error("Book not found")
+        }
+
+        const updatedBook = await Book.findByIdAndUpdate(bookId, { $set: updatePart }, { new: true })
+
+        res.json({
+            success: true,
+            message: "Book updated successfully",
+            data: updatedBook
+        })
+    } catch (error: any) {
+        if (!error.message) {
+            error.message = "Book update failed"
+        }
+
+        if (error.name === "CastError") {
+            error.message = "BookId is not valid"
+        }
+        next(error)
+    }
+})
+
+// Delete Book api
+booksRoutes.delete("/:bookId", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const bookId = req.params.bookId
+
+        const existingBook = await Book.findById(bookId)
+
+        if (!existingBook) {
+            throw new Error("Book not found")
+        }
+
+        await Book.findByIdAndDelete(bookId)
+
+        res.json({
+            success: true,
+            message: "Book deleted successfully",
+            data: null
+        })
+    } catch (error: any) {
+        if (!error.message) {
+            error.message = "Book delete failed"
+        }
+
+        if (error.name === "CastError") {
+            error.message = "BookId is not valid"
+        }
         next(error)
     }
 })

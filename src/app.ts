@@ -11,7 +11,10 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-    res.status(404).json({ message: "Route not found" })
+    res.status(404).json({
+        success: false,
+        message: "Route not found"
+    })
 })
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +23,7 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
         res.status(400).json(
             {
                 success: false,
-                message: error._message || error.name === "ZodError" && "Validation failed" || "Something went wrong",
+                message: error._message || error.message || "Something went wrong",
                 error
             }
         )
