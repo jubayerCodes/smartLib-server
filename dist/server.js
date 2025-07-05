@@ -13,11 +13,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
-let server;
+const mongoose = require('mongoose');
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const port = 3000;
-const bootstrap = () => __awaiter(void 0, void 0, void 0, function* () {
-    server = app_1.default.listen(port, () => {
-        console.log(`Example app listening on port ${port}`);
+main().catch(err => console.log(err));
+function main() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.opkciwj.mongodb.net/SmartLibDB?retryWrites=true&w=majority&appName=Cluster0`);
+        app_1.default.listen(port, () => {
+            console.log(`Example app listening on port ${port}`);
+        });
     });
-});
-bootstrap();
+}
