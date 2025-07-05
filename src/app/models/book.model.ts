@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
-import { IBooks } from "../interfaces/books.interface";
 import z from "zod";
+import { IBook } from "../interfaces/book.interface";
 
-const bookSchema = new Schema<IBooks>({
+const bookSchema = new Schema<IBook>({
     title: { type: String, required: true, trim: true },
     author: { type: String, required: true, trim: true },
     genre: { type: String, required: true, enum: ["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"] },
@@ -15,7 +15,7 @@ const bookSchema = new Schema<IBooks>({
     timestamps: true
 })
 
-export const Book = model<IBooks>("Book", bookSchema)
+export const Book = model<IBook>("Book", bookSchema)
 
 export const bookZodSchema = z.object({
     title: z.string(),

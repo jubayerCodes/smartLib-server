@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express"
-import { Book, bookZodSchema } from "../models/books.model"
+import { Book, bookZodSchema } from "../models/book.model"
 
 export const booksRoutes = express.Router()
 
