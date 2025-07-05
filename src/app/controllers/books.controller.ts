@@ -3,7 +3,6 @@ import { Book, bookZodSchema } from "../models/book.model"
 
 export const booksRoutes = express.Router()
 
-
 // Create Book API
 booksRoutes.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {

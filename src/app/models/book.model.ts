@@ -1,8 +1,8 @@
-import { model, Schema } from "mongoose";
+import { Model, model, Schema } from "mongoose";
 import z from "zod";
-import { IBook } from "../interfaces/book.interface";
+import { BookInstanceMethods, IBook } from "../interfaces/book.interface";
 
-const bookSchema = new Schema<IBook>({
+const bookSchema = new Schema<IBook, Model<IBook>, BookInstanceMethods>({
     title: { type: String, required: true, trim: true },
     author: { type: String, required: true, trim: true },
     genre: { type: String, required: true, enum: ["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"] },
@@ -15,7 +15,12 @@ const bookSchema = new Schema<IBook>({
     timestamps: true
 })
 
-export const Book = model<IBook>("Book", bookSchema)
+// Instance Methods
+bookSchema.method("adjustInventory", async function adjustInventory() {
+    console.log(this);
+})
+
+export const Book = model("Book", bookSchema)
 
 export const bookZodSchema = z.object({
     title: z.string(),
