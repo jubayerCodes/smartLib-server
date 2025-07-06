@@ -1,6 +1,7 @@
 import { Model, model, Schema } from "mongoose";
 import z from "zod";
 import { BookInstanceMethods, IBook } from "../interfaces/book.interface";
+import { Borrow } from "./borrow.model";
 
 const bookSchema = new Schema<IBook, Model<IBook>, BookInstanceMethods>({
     title: { type: String, required: true, trim: true },
@@ -30,7 +31,7 @@ bookSchema.method("adjustInventory", async function adjustInventory(quantity: nu
     await this.save()
 })
 
-// Pre methods
+// Pre middleware
 bookSchema.pre("findOneAndUpdate", function (next) {
     const update: any = this.getUpdate();
 
@@ -60,6 +61,14 @@ bookSchema.pre("findOneAndUpdate", function (next) {
 
     next()
 })
+
+// Post middleware
+bookSchema.post("deleteOne", { document: true, query: false }, async function (doc) {
+    if (doc?._id) {
+        await Borrow.deleteMany({ book: doc._id });
+        console.log(`Deleted all borrow records for book "${doc.title}"`);
+    }
+});
 
 export const Book = model("Book", bookSchema)
 

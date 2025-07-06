@@ -120,7 +120,7 @@ booksRoutes.delete("/:bookId", async (req: Request, res: Response, next: NextFun
             throw new Error("Book not found")
         }
 
-        await Book.findByIdAndDelete(bookId)
+        await existingBook.deleteOne();
 
         res.json({
             success: true,
