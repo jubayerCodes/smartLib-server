@@ -22,10 +22,23 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     if (error) {
 
+        let message = error._message
+
+        switch (error.name) {
+            case "CastError":
+                message = "ObjectId is not valid"
+                break;
+            case "ZodError":
+                message = "Validation failed"
+                break;
+            default:
+                message = error.message
+        }
+
         res.status(400).json(
             {
                 success: false,
-                message: error._message || error.message || "Something went wrong",
+                message: message || "Something went wrong",
                 error
             }
         )

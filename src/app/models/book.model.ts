@@ -16,8 +16,49 @@ const bookSchema = new Schema<IBook, Model<IBook>, BookInstanceMethods>({
 })
 
 // Instance Methods
-bookSchema.method("adjustInventory", async function adjustInventory() {
-    console.log(this);
+bookSchema.method("adjustInventory", async function adjustInventory(quantity: number) {
+    if (quantity > this.copies) {
+        throw new Error(`Not enough copies. ${this.copies} copies available.`);
+    }
+
+    this.copies -= quantity;
+
+    if (this.copies === 0) {
+        this.available = false;
+    }
+
+    await this.save()
+})
+
+// Pre methods
+bookSchema.pre("findOneAndUpdate", function (next) {
+    const update: any = this.getUpdate();
+
+    const copies = update?.copies ?? update?.$set?.copies;
+
+    if (copies !== undefined) {
+        if (copies < 0) {
+            return next(new Error("Copies must be a positive number"));
+        }
+
+        if (copies === 0) {
+            if (update?.$set) {
+                update.$set.available = false;
+            } else {
+                update.available = false;
+            }
+        }
+
+        if (copies > 0) {
+            if (update?.$set) {
+                update.$set.available = true;
+            } else {
+                update.available = true;
+            }
+        }
+    }
+
+    next()
 })
 
 export const Book = model("Book", bookSchema)

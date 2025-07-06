@@ -77,16 +77,12 @@ booksRoutes.get('/:bookId', async (req: Request, res: Response, next: NextFuncti
     } catch (error: any) {
 
         error.message = "Book retrieve failed"
-
-        if (error.name === "CastError") {
-            error.message = "BookId is not valid"
-        }
         next(error)
     }
 })
 
 
-// Update book
+// Update book api
 booksRoutes.put('/:bookId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const bookId = req.params.bookId
@@ -108,10 +104,6 @@ booksRoutes.put('/:bookId', async (req: Request, res: Response, next: NextFuncti
     } catch (error: any) {
         if (!error.message) {
             error.message = "Book update failed"
-        }
-
-        if (error.name === "CastError") {
-            error.message = "BookId is not valid"
         }
         next(error)
     }
@@ -138,10 +130,6 @@ booksRoutes.delete("/:bookId", async (req: Request, res: Response, next: NextFun
     } catch (error: any) {
         if (!error.message) {
             error.message = "Book delete failed"
-        }
-
-        if (error.name === "CastError") {
-            error.message = "BookId is not valid"
         }
         next(error)
     }

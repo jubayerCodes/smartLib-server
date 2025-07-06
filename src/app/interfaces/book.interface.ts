@@ -1,5 +1,3 @@
-import { Model } from "mongoose"
-
 export interface IBook {
     title: string,
     author: string,
@@ -11,5 +9,5 @@ export interface IBook {
 }
 
 export interface BookInstanceMethods {
-    adjustInventory(): void
+    adjustInventory(quantity: number): void
 }
