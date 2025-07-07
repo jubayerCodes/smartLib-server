@@ -16,7 +16,17 @@ booksRoutes.post('/', async (req: Request, res: Response, next: NextFunction) =>
             data: newBook
         })
     } catch (error: any) {
-        error.message = "Book post failed"
+
+        if (!error.message) {
+            error.message = "Book post failed"
+        }
+
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern)[0];
+            const value = error.keyValue[field];
+
+            error.message = `${field} with value '${value}' already exists.`
+        }
         next(error)
     }
 })
@@ -56,7 +66,9 @@ booksRoutes.get('/', async (req: Request, res: Response, next: NextFunction) => 
             data: allBooks
         })
     } catch (error: any) {
-        error.message = "Books retrieve failed"
+        if (!error.message) {
+            error.message = "Books retrieve failed"
+        }
         next(error)
     }
 })
@@ -76,7 +88,9 @@ booksRoutes.get('/:bookId', async (req: Request, res: Response, next: NextFuncti
         })
     } catch (error: any) {
 
-        error.message = "Book retrieve failed"
+        if (!error.message) {
+            error.message = "Book retrieve failed"
+        }
         next(error)
     }
 })
@@ -86,7 +100,7 @@ booksRoutes.get('/:bookId', async (req: Request, res: Response, next: NextFuncti
 booksRoutes.put('/:bookId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const bookId = req.params.bookId
-        const updatePart = req.body
+        const updatePart = bookZodSchema.partial().parse(req.body)
 
         const existingBook = await Book.findById(bookId)
 
@@ -104,6 +118,13 @@ booksRoutes.put('/:bookId', async (req: Request, res: Response, next: NextFuncti
     } catch (error: any) {
         if (!error.message) {
             error.message = "Book update failed"
+        }
+
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern)[0];
+            const value = error.keyValue[field];
+
+            error.message = `${field} with value '${value}' already exists.`
         }
         next(error)
     }
