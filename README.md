@@ -58,5 +58,3 @@ A Library Management REST API built with **Express.js**, **TypeScript**, and **M
 - **Database**: MongoDB with Mongoose
 - **Validation**: Zod + Mongoose Schema
 - **Deployment**: Render
-
----
