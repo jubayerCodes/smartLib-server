@@ -12,6 +12,14 @@ A Library Management REST API built with **Express.js**, **TypeScript**, and **M
     npm run dev
 ---
 
+## 🔗 Live API & Demo
+
+- 🚀 Live API: [https://smartlib-server.onrender.com](https://smartlib-server.onrender.com)
+- 🎥 Video Explanation: [YouTube Link](https://youtube.com/your-video-link)
+- 📁 GitHub Repo: [GitHub Repository](https://github.com/jubayerCodes/smartLib-server)
+
+---
+
 ## 🚀 Features
 
 - 📖 **CRUD Operations** for Books
@@ -22,16 +30,6 @@ A Library Management REST API built with **Express.js**, **TypeScript**, and **M
 - ⚙️ **Mongoose Middleware** (`pre`, `post`)
 - 🧠 **Mongoose Instance Method** for inventory adjustment
 - 🛡️ **Robust Error Handling** (Zod, Mongoose, CastError)
-
----
-
-## 🔗 Live API & Demo
-
-> 💡 Replace the links after deployment & video upload
-
-- 🚀 Live API: [https://smart-lib-api.onrender.com](https://smart-lib-api.onrender.com)
-- 🎥 Video Explanation: [YouTube Link](https://youtube.com/your-video-link)
-- 📁 GitHub Repo: [GitHub Repository](https://github.com/your-username/smart-lib-api)
 
 ---
 
