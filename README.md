@@ -1,7 +1,6 @@
 # 📚 Smart Library Management API
 
 A Library Management REST API built with **Express.js**, **TypeScript**, and **MongoDB (Mongoose)**. This system allows users to manage books and borrowing records, enforcing business rules like inventory control and availability checks.
-
 ---
 
 ## 💻 Local Setup
@@ -10,6 +9,14 @@ A Library Management REST API built with **Express.js**, **TypeScript**, and **M
     cd smartLib-server
     npm install
     npm run dev
+---
+
+## ⚙️ Environment Variables
+
+**Create a .env file with:**
+
+    DB_USER=smartLib
+    DB_PASS=pQ9NsglZkoAJiIKd
 ---
 
 ## 🔗 Live API & Demo
@@ -42,8 +49,6 @@ A Library Management REST API built with **Express.js**, **TypeScript**, and **M
     ├── models/ # Mongoose schemas & Zod validation
     ├── interfaces/ # TypeScript interfaces
     └── ...
-
-
 ---
 
 ## 🛠️ Tech Stack
@@ -55,17 +60,3 @@ A Library Management REST API built with **Express.js**, **TypeScript**, and **M
 - **Deployment**: Render
 
 ---
-
-## ⚙️ Environment Variables
-
-**Create a .env file with:**
-
-    DB_USER=yourMongoUser
-    DB_PASS=yourMongoPass
-    PORT=3000
----
-
-## 📜 License
-
-Let me know if you'd like a version with your **GitHub repo link**, **live deployment link**, and **video link** filled in! Once you add this to your project root, you’re ready to submit! ✅
-
