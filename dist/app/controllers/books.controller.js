@@ -14,13 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.booksRoutes = void 0;
 const express_1 = __importDefault(require("express"));
-const books_model_1 = require("../models/books.model");
+const book_model_1 = require("../models/book.model");
 exports.booksRoutes = express_1.default.Router();
 // Create Book API
 exports.booksRoutes.post('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const body = books_model_1.bookZodSchema.parse(req.body);
-        const newBook = yield books_model_1.Book.create(body);
+        const body = book_model_1.bookZodSchema.parse(req.body);
+        const newBook = yield book_model_1.Book.create(body);
         res.json({
             success: true,
             message: "Book created successfully",
@@ -28,7 +28,14 @@ exports.booksRoutes.post('/', (req, res, next) => __awaiter(void 0, void 0, void
         });
     }
     catch (error) {
-        error.message = "Book post failed";
+        if (!error.message) {
+            error.message = "Book post failed";
+        }
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern)[0];
+            const value = error.keyValue[field];
+            error.message = `${field} with value '${value}' already exists.`;
+        }
         next(error);
     }
 }));
@@ -42,7 +49,7 @@ exports.booksRoutes.get('/', (req, res, next) => __awaiter(void 0, void 0, void 
             query.genre = filter;
         }
         let sortOption = {};
-        let allBooksCursor = books_model_1.Book.find(query);
+        let allBooksCursor = book_model_1.Book.find(query);
         if (sortBy && sortOrder !== undefined) {
             sortOption = { [sortBy]: sortOrder };
             allBooksCursor = allBooksCursor.sort(sortOption);
@@ -58,7 +65,9 @@ exports.booksRoutes.get('/', (req, res, next) => __awaiter(void 0, void 0, void 
         });
     }
     catch (error) {
-        error.message = "Books retrieve failed";
+        if (!error.message) {
+            error.message = "Books retrieve failed";
+        }
         next(error);
     }
 }));
@@ -66,7 +75,7 @@ exports.booksRoutes.get('/', (req, res, next) => __awaiter(void 0, void 0, void 
 exports.booksRoutes.get('/:bookId', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const bookId = req.params.bookId;
-        const book = yield books_model_1.Book.findById(bookId);
+        const book = yield book_model_1.Book.findById(bookId);
         res.json({
             success: true,
             message: "Book retrieved successfully",
@@ -74,23 +83,22 @@ exports.booksRoutes.get('/:bookId', (req, res, next) => __awaiter(void 0, void 0
         });
     }
     catch (error) {
-        error.message = "Book retrieve failed";
-        if (error.name === "CastError") {
-            error.message = "BookId is not valid";
+        if (!error.message) {
+            error.message = "Book retrieve failed";
         }
         next(error);
     }
 }));
-// Update book
+// Update book api
 exports.booksRoutes.put('/:bookId', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const bookId = req.params.bookId;
-        const updatePart = req.body;
-        const existingBook = yield books_model_1.Book.findById(bookId);
+        const updatePart = book_model_1.bookZodSchema.partial().parse(req.body);
+        const existingBook = yield book_model_1.Book.findById(bookId);
         if (!existingBook) {
             throw new Error("Book not found");
         }
-        const updatedBook = yield books_model_1.Book.findByIdAndUpdate(bookId, { $set: updatePart }, { new: true });
+        const updatedBook = yield book_model_1.Book.findByIdAndUpdate(bookId, { $set: updatePart }, { new: true });
         res.json({
             success: true,
             message: "Book updated successfully",
@@ -101,8 +109,10 @@ exports.booksRoutes.put('/:bookId', (req, res, next) => __awaiter(void 0, void 0
         if (!error.message) {
             error.message = "Book update failed";
         }
-        if (error.name === "CastError") {
-            error.message = "BookId is not valid";
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern)[0];
+            const value = error.keyValue[field];
+            error.message = `${field} with value '${value}' already exists.`;
         }
         next(error);
     }
@@ -111,11 +121,11 @@ exports.booksRoutes.put('/:bookId', (req, res, next) => __awaiter(void 0, void 0
 exports.booksRoutes.delete("/:bookId", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const bookId = req.params.bookId;
-        const existingBook = yield books_model_1.Book.findById(bookId);
+        const existingBook = yield book_model_1.Book.findById(bookId);
         if (!existingBook) {
             throw new Error("Book not found");
         }
-        yield books_model_1.Book.findByIdAndDelete(bookId);
+        yield existingBook.deleteOne();
         res.json({
             success: true,
             message: "Book deleted successfully",
@@ -125,9 +135,6 @@ exports.booksRoutes.delete("/:bookId", (req, res, next) => __awaiter(void 0, voi
     catch (error) {
         if (!error.message) {
             error.message = "Book delete failed";
-        }
-        if (error.name === "CastError") {
-            error.message = "BookId is not valid";
         }
         next(error);
     }
