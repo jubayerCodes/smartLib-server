@@ -22,7 +22,7 @@ A Library Management REST API built with **Express.js**, **TypeScript**, and **M
 ## 🔗 Live API & Demo
 
 - 🚀 Live API: [https://smartlib-server.onrender.com](https://smartlib-server.onrender.com)
-- 🎥 Video Explanation: [YouTube Link](https://youtube.com/your-video-link)
+- 🎥 Video Explanation: [Drive Link](https://drive.google.com/file/d/1Jno0EdOfrrpIiS0AUjNfKFRfAIvu7sZF/view?usp=drive_link)
 - 📁 GitHub Repo: [GitHub Repository](https://github.com/jubayerCodes/smartLib-server)
 
 ---
